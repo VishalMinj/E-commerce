@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        div {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100dvh;
+            width: 100%;
+            background: #eee;
+        }
+        section{
+            margin-top: 50px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        #veepn-guard-alert,#veepn-breach-alert{
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <section>
+            {% if message %}
+                <h1 >Your account has been verified successfully.</h1>
+            {% elif error %}
+                <h1 >{{ error }}</h1>
+            {% else %}
+                <h1 >Your account has not been verified.</h1>
+            {% endif %}
+        </section> 
+    </div>
+</body>
+</html>
