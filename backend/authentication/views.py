@@ -1,11 +1,16 @@
 from rest_framework.response import Response
-from .serializers import UserSignUpSerializer
 from rest_framework import status
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
-from .utils import verify_token, generate_verification_token, send_mail
 from django.urls import reverse
 from rest_framework.decorators import api_view, renderer_classes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
+from .serializers import UserSignUpSerializer, UserLoginSerializer
+from .utils import (
+    verify_token,
+    generate_verification_token,
+    send_mail,
+    get_tokens_for_user,
+)
 
 
 @extend_schema(
@@ -29,19 +34,35 @@ def SignupView(request):
         subject = "Verify Your Email"
         template_name = "email_verification.html"
         message = f"Click the link to verify your email: {verification_url}"
-        send_mail(subject, message, user.email, verification_url,template_name)
+        send_mail(subject, message, user.email, verification_url, template_name)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@extend_schema(tags=["Authentication"])
+@extend_schema(
+    tags=["Authentication"],
+    request=UserLoginSerializer,
+    responses={201: UserLoginSerializer},
+)
 @api_view(["POST"])
 def LoginView(request):
     """
     Login view for user creation
     """
-    ...
+    serializer = UserLoginSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.instance
+        tokens = get_tokens_for_user(user)
+        data = UserLoginSerializer(user).data
+        response = Response(
+            data,
+            status=status.HTTP_200_OK,
+        )
+        response.set_cookie("access", tokens["access"], httponly=True)
+        response.set_cookie("refresh", tokens["refresh"], httponly=True)
+        return response
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @extend_schema(

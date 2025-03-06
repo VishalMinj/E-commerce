@@ -217,3 +217,18 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 EMAIL_VERIFICATION_EXPIRATION = 60*15  # 15 minutes
+
+
+# cookie config
+# CSRF_COOKIE_HTTPONLY = True
+# CSRF_COOKIE_SECURE = True  # Must be True for HTTPS
+# CSRF_COOKIE_SAMESITE = "None"
+
+# SESSION_COOKIE_HTTPONLY = True
+# SESSION_COOKIE_SECURE = True  # Must be True for HTTPS
+# SESSION_COOKIE_SAMESITE = "None"
+
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOWED_ORIGINS = [
+#     "https://yourfrontend.com",
+# ]

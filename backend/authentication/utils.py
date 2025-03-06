@@ -6,6 +6,7 @@ from django.core.mail import send_mail as sm
 from config import settings
 from threading import Thread
 from django.template.loader import render_to_string
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 signer = TimestampSigner(salt="email-verification")
@@ -65,3 +66,11 @@ def send_mail(subject, message, email, verification_url,template_name):
         from_email=settings.EMAIL_HOST_USER,
         html_message=convert_to_html_content,
     )
+
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+    return {
+        "refresh": str(refresh),
+        "access": str(refresh.access_token),
+    }
