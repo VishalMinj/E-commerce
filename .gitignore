@@ -24,6 +24,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+routeTree.gen.ts
 
 # backend
 
@@ -32,4 +33,4 @@ __pycache__
 .env
 migrations
 *.yml
-
+uv.lock
