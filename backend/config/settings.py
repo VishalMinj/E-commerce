@@ -228,7 +228,13 @@ EMAIL_VERIFICATION_EXPIRATION = 60*15  # 15 minutes
 # SESSION_COOKIE_SECURE = True  # Must be True for HTTPS
 # SESSION_COOKIE_SAMESITE = "None"
 
-# CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_HEADERS = [
+#     "content-type",
+#     "authorization",
+#     "x-csrftoken",
+# ]
 # CORS_ALLOWED_ORIGINS = [
 #     "https://yourfrontend.com",
 # ]

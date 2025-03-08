@@ -38,23 +38,24 @@ class UserSignUpSerializer(ModelSerializer):
 
         if not re.match(r".{8,}", password):
             raise serializers.ValidationError(
-                {"error": "Password must have atleast 8 charectors!"}
+                {"error": "Password must have 8 charecter!"}
             )
         if not re.search(r"[!@#$%^&*()_+={}\[\]:;\"'<>,.?/\\|`~-]", password):
             raise serializers.ValidationError(
-                {"error": "Password must have atleast 1 special charectors!"}
+                {"error": "Password must have 1 special charecter!"}
             )
         if not re.search(r"[0-9]", password):
-            raise serializers.ValidationError(
-                {"error": "Password must have atleast 1 digit!"}
-            )
+            raise serializers.ValidationError({"error": "Password must have 1 digit!"})
 
         return attrs
 
     def create(self, validated_data):
         validated_data.pop("password2")
         username = validated_data.get("email").split("@")[0]
-        return CustomUser.objects.create(username=username, **validated_data)
+        user=CustomUser.objects.create(username=username, **validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
 class UserLoginSerializer(ModelSerializer):
@@ -96,10 +97,10 @@ class UserLoginSerializer(ModelSerializer):
             raise serializers.ValidationError(
                 {"error": "User with this email/username does not exists!"}
             )
+        if not user.is_verified:
+            raise serializers.ValidationError({"error": "Your email is not verified!"})
         if not user.check_password(password):
             raise serializers.ValidationError({"error": "Incorrect password!"})
 
-        if not user.is_verified:
-            raise serializers.ValidationError({"error": "Your email is not verified!"})
         self.instance = user
         return attrs

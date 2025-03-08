@@ -16,7 +16,12 @@ from .utils import (
 @extend_schema(
     tags=["Authentication"],
     request=UserSignUpSerializer,
-    responses={201: UserSignUpSerializer},
+    responses={
+        201: {
+            "description": "Activation mail sent successfully!",
+            "example": {"message": "Activation mail sent successfully!"},
+        }
+    },
 )
 @api_view(["POST"])
 def SignupView(request):
@@ -35,9 +40,9 @@ def SignupView(request):
         template_name = "email_verification.html"
         message = f"Click the link to verify your email: {verification_url}"
         send_mail(subject, message, user.email, verification_url, template_name)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message':"Activation mail sent successfully!"}, status=status.HTTP_201_CREATED)
+    error = serializer.errors["error"][0]
+    return Response({"error":error}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @extend_schema(
@@ -59,8 +64,8 @@ def LoginView(request):
             data,
             status=status.HTTP_200_OK,
         )
-        response.set_cookie("access", tokens["access"], httponly=True)
-        response.set_cookie("refresh", tokens["refresh"], httponly=True)
+        response.set_cookie("access", tokens["access"], httponly=True,max_age=60*15,secure=True,samesite="None",domain="localhost")    
+        response.set_cookie("refresh", tokens["refresh"], httponly=True,max_age=60*15,secure=True,samesite="None",domain="localhost")
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
