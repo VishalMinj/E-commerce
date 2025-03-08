@@ -1,12 +1,14 @@
 import { useState } from "react";
 import style from "./Form.module.css";
 import { LoginApi, SignUpApi } from "../../api";
+import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export const Form = () => {
   const [formToggle, setFormToggle] = useState(true);
   const [anime, setanime] = useState<null | boolean>(null);
+  const navigate = useNavigate();
   const Loginmutation = useMutation({
     mutationFn: LoginApi,
     onError: (error) => {
@@ -18,13 +20,14 @@ export const Form = () => {
     },
     onSuccess: () => {
       toast.success("Login successfull");
+      navigate({ to: "/" });
     },
   });
 
   const Signupmutation = useMutation({
     mutationFn: SignUpApi,
     onSuccess: (data) => {
-      toast.success(data?.message)
+      toast.success(data?.message);
       setTimeout(() => {
         toast.success("Email will expire in 15 min");
       }, 2500);

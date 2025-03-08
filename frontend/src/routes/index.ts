@@ -1,2 +1,2 @@
 export { Route } from "./__root";
-export { router } from "./AppRoutes";
+export { router } from "./routes";
